@@ -1,0 +1,58 @@
+{
+  "hash": "4903b7d1",
+  "configHash": "b14b902c",
+  "lockfileHash": "edfa534c",
+  "browserHash": "d03840be",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "dce0c145",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "65ac117e",
+      "needsInterop": true
+    },
+    "@supabase/supabase-js": {
+      "src": "../../node_modules/@supabase/supabase-js/dist/module/index.js",
+      "file": "@supabase_supabase-js.js",
+      "fileHash": "8cb3cca4",
+      "needsInterop": false
+    },
+    "@supabase/auth-ui-react": {
+      "src": "../../node_modules/@supabase/auth-ui-react/dist/index.es.js",
+      "file": "@supabase_auth-ui-react.js",
+      "fileHash": "49b34e67",
+      "needsInterop": false
+    },
+    "@supabase/auth-ui-shared": {
+      "src": "../../node_modules/@supabase/auth-ui-shared/dist/index.mjs",
+      "file": "@supabase_auth-ui-shared.js",
+      "fileHash": "7747fa63",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-65KY755N": {
+      "file": "chunk-65KY755N.js"
+    },
+    "chunk-OH4ZLUJL": {
+      "file": "chunk-OH4ZLUJL.js"
+    },
+    "browser-VLKRZ7RP": {
+      "file": "browser-VLKRZ7RP.js"
+    },
+    "chunk-C5A7FNJB": {
+      "file": "chunk-C5A7FNJB.js"
+    },
+    "browser-B5UES2FC": {
+      "file": "browser-B5UES2FC.js"
+    },
+    "chunk-V4OQ3NZ2": {
+      "file": "chunk-V4OQ3NZ2.js"
+    }
+  }
+}
