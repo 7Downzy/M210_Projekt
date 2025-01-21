@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 
+import Items from './Items';
+
 function ShoppingList({ supabase }) {
   const [lists, setLists] = useState([]);
   const [newListTitle, setNewListTitle] = useState("");
   const [session, setSession] = useState(null);
+  const [selectedListId, setSelectedListId] = useState(null); // Zustand für die ausgewählte Liste
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -123,23 +126,43 @@ function ShoppingList({ supabase }) {
             }}
           >
             <span>{list.title}</span>
-            <button
-              onClick={() => deleteShoppingList(list.id)}
-              style={{
-                padding: "5px 10px",
-                fontSize: "14px",
-                color: "white",
-                backgroundColor: "red",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              Löschen
-            </button>
+            <div>
+              <button
+                onClick={() => setSelectedListId(list.id)} // Items anzeigen
+                style={{
+                  padding: "5px 10px",
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "blue",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginRight: "5px",
+                }}
+              >
+                Items anzeigen
+              </button>
+              <button
+                onClick={() => deleteShoppingList(list.id)} // Einkaufsliste löschen
+                style={{
+                  padding: "5px 10px",
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "red",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Löschen
+              </button>
+            </div>
           </li>
         ))}
       </ul>
+
+      {/* Items-Komponente wird angezeigt, wenn eine Liste ausgewählt ist */}
+      {selectedListId && <Items supabase={supabase} listId={selectedListId} />}
     </div>
   );
 }
