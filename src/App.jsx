@@ -5,9 +5,12 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import ShoppingList from "./components/ShoppingList";
 
+const API = import.meta.env.VITE_API
+const KEY = import.meta.env.VITE_KEY
+
 const supabase = createClient(
-  "https://iumkcujcrxicfvbnytol.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1bWtjdWpjcnhpY2Z2Ym55dG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0NDQ4MDEsImV4cCI6MjA1MzAyMDgwMX0.vIVvwAC6YkRLjk8h4DbxNLeWVKMcEjgwTnvI8iKoip0"
+  API,
+  KEY
 );
 
 function App() {
