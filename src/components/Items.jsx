@@ -4,6 +4,9 @@ function Items({ supabase, listId }) {
   const [items, setItems] = useState([]);
   const [newItemName, setNewItemName] = useState("");
   const [newItemQuantity, setNewItemQuantity] = useState(1);
+  const [editingItemId, setEditingItemId] = useState(null);
+  const [editingItemName, setEditingItemName] = useState("");
+  const [editingItemQuantity, setEditingItemQuantity] = useState(1);
 
   useEffect(() => {
     fetchItems();
@@ -35,12 +38,44 @@ function Items({ supabase, listId }) {
       ])
       .select();
 
-    if (error) {
-      console.error("Fehler beim Hinzufügen des Items:", error);
-    } else if (data) {
+    if (!error && data) {
       setItems((prevItems) => [...prevItems, ...data]);
       setNewItemName("");
       setNewItemQuantity(1);
+    }
+  }
+
+  async function deleteItem(itemId) {
+    const { error } = await supabase.from("items").delete().eq("id", itemId);
+
+    if (!error) {
+      // Stelle sicher, dass die Seite neu geladen wird
+      window.location.reload();
+    }
+  }
+
+  async function updateItem() {
+    if (editingItemName.trim() === "") return;
+
+    const { error } = await supabase
+      .from("items")
+      .update({
+        name: editingItemName,
+        quantity: editingItemQuantity,
+      })
+      .eq("id", editingItemId);
+
+    if (!error) {
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === editingItemId
+            ? { ...item, name: editingItemName, quantity: editingItemQuantity }
+            : item
+        )
+      );
+      setEditingItemId(null);
+      setEditingItemName("");
+      setEditingItemQuantity(1);
     }
   }
 
@@ -65,9 +100,47 @@ function Items({ supabase, listId }) {
       <ul>
         {items.map((item) => (
           <li key={item.id}>
-            <span>
-              {item.name} (x{item.quantity})
-            </span>
+            {editingItemId === item.id ? (
+              <div>
+                <input
+                  type="text"
+                  value={editingItemName}
+                  onChange={(e) => setEditingItemName(e.target.value)}
+                />
+                <input
+                  type="number"
+                  min="1"
+                  value={editingItemQuantity}
+                  onChange={(e) => setEditingItemQuantity(e.target.value)}
+                />
+                <button onClick={updateItem}>Speichern</button>
+                <button
+                  onClick={() => {
+                    setEditingItemId(null);
+                    setEditingItemName("");
+                    setEditingItemQuantity(1);
+                  }}
+                >
+                  Abbrechen
+                </button>
+              </div>
+            ) : (
+              <div>
+                <span>
+                  {item.name} (x{item.quantity})
+                </span>
+                <button
+                  onClick={() => {
+                    setEditingItemId(item.id);
+                    setEditingItemName(item.name);
+                    setEditingItemQuantity(item.quantity);
+                  }}
+                >
+                  Bearbeiten
+                </button>
+                <button onClick={() => deleteItem(item.id)}>Löschen</button>
+              </div>
+            )}
           </li>
         ))}
       </ul>

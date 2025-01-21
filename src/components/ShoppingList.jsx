@@ -8,7 +8,9 @@ function ShoppingList({ supabase }) {
   const [lists, setLists] = useState([]);
   const [newListTitle, setNewListTitle] = useState("");
   const [session, setSession] = useState(null);
-  const [selectedListId, setSelectedListId] = useState(null); // Zustand für die ausgewählte Liste
+  const [selectedListId, setSelectedListId] = useState(null);
+  const [editingListId, setEditingListId] = useState(null);
+  const [editingListTitle, setEditingListTitle] = useState("");
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -70,17 +72,27 @@ function ShoppingList({ supabase }) {
     if (error) {
       console.error("Fehler beim Löschen der Einkaufsliste:", error);
     } else {
-      fetchShoppingLists();
+      window.location.reload(); // Seite neu laden
     }
   }
 
-  if (!session) {
-    return (
-      <div style={{ padding: "20px" }}>
-        <h1>Login</h1>
-        <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }} />
-      </div>
-    );
+  async function updateShoppingList() {
+    if (editingListTitle.trim() === "") {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("shopping_lists")
+      .update({ title: editingListTitle })
+      .eq("id", editingListId);
+
+    if (error) {
+      console.error("Fehler beim Bearbeiten der Einkaufsliste:", error);
+    } else {
+      setEditingListId(null);
+      setEditingListTitle("");
+      fetchShoppingLists();
+    }
   }
 
   return (
@@ -125,10 +137,57 @@ function ShoppingList({ supabase }) {
               alignItems: "center",
             }}
           >
-            <span>{list.title}</span>
+            {editingListId === list.id ? (
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <input
+                  type="text"
+                  value={editingListTitle}
+                  onChange={(e) => setEditingListTitle(e.target.value)}
+                  style={{
+                    padding: "5px",
+                    fontSize: "14px",
+                    marginRight: "10px",
+                  }}
+                />
+                <button
+                  onClick={updateShoppingList}
+                  style={{
+                    padding: "5px 10px",
+                    fontSize: "14px",
+                    color: "white",
+                    backgroundColor: "green",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    marginRight: "5px",
+                  }}
+                >
+                  Speichern
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingListId(null);
+                    setEditingListTitle("");
+                  }}
+                  style={{
+                    padding: "5px 10px",
+                    fontSize: "14px",
+                    color: "white",
+                    backgroundColor: "gray",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Abbrechen
+                </button>
+              </div>
+            ) : (
+              <span>{list.title}</span>
+            )}
             <div>
               <button
-                onClick={() => setSelectedListId(list.id)} // Items anzeigen
+                onClick={() => setSelectedListId(list.id)}
                 style={{
                   padding: "5px 10px",
                   fontSize: "14px",
@@ -143,7 +202,25 @@ function ShoppingList({ supabase }) {
                 Items anzeigen
               </button>
               <button
-                onClick={() => deleteShoppingList(list.id)} // Einkaufsliste löschen
+                onClick={() => {
+                  setEditingListId(list.id);
+                  setEditingListTitle(list.title);
+                }}
+                style={{
+                  padding: "5px 10px",
+                  fontSize: "14px",
+                  color: "white",
+                  backgroundColor: "orange",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                  marginRight: "5px",
+                }}
+              >
+                Bearbeiten
+              </button>
+              <button
+                onClick={() => deleteShoppingList(list.id)}
                 style={{
                   padding: "5px 10px",
                   fontSize: "14px",
@@ -161,7 +238,6 @@ function ShoppingList({ supabase }) {
         ))}
       </ul>
 
-      {/* Items-Komponente wird angezeigt, wenn eine Liste ausgewählt ist */}
       {selectedListId && <Items supabase={supabase} listId={selectedListId} />}
     </div>
   );
