@@ -43,7 +43,7 @@ function App() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Willkommen!</h1>
+      <h1>WELCOME!</h1>
       <button
         onClick={async () => {
           await supabase.auth.signOut();
