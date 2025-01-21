@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
+import ShoppingList from "./components/ShoppingList";
 
 const supabase = createClient(
   "https://iumkcujcrxicfvbnytol.supabase.co",
@@ -56,10 +57,13 @@ function App() {
           color: "white",
           border: "none",
           borderRadius: "5px",
+          marginBottom: "20px",
         }}
       >
         Logout
       </button>
+
+      <ShoppingList supabase={supabase} />
     </div>
   );
 }
