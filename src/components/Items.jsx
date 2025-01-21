@@ -49,8 +49,7 @@ function Items({ supabase, listId }) {
     const { error } = await supabase.from("items").delete().eq("id", itemId);
 
     if (!error) {
-      // Stelle sicher, dass die Seite neu geladen wird
-      window.location.reload();
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
     }
   }
 
@@ -76,6 +75,21 @@ function Items({ supabase, listId }) {
       setEditingItemId(null);
       setEditingItemName("");
       setEditingItemQuantity(1);
+    }
+  }
+
+  async function toggleChecked(itemId, currentChecked) {
+    const { error } = await supabase
+      .from("items")
+      .update({ checked: !currentChecked })
+      .eq("id", itemId);
+
+    if (!error) {
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === itemId ? { ...item, checked: !currentChecked } : item
+        )
+      );
     }
   }
 
@@ -126,9 +140,19 @@ function Items({ supabase, listId }) {
               </div>
             ) : (
               <div>
-                <span>
+                <span
+                  style={{
+                    textDecoration: item.checked ? "line-through" : "none",
+                  }}
+                >
                   {item.name} (x{item.quantity})
                 </span>
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleChecked(item.id, item.checked)}
+                  style={{ marginLeft: "10px" }}
+                />
                 <button
                   onClick={() => {
                     setEditingItemId(item.id);
